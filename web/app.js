@@ -193,7 +193,7 @@
 
     let selo = "--", seloIcone = "desligado";
     if (irrigando) { selo = "REGANDO"; seloIcone = "gota"; }
-    else if (temDado) { selo = seco ? "SECO" : "OK"; seloIcone = "gota"; }
+    else if (temDado) { selo = seco ? "SECO" : "OK"; seloIcone = seco ? "seco" : "trigo"; }
     campo(el, "selo").textContent = selo;
     const iconeSelo = campo(el, "selo-icone");
     if (iconeSelo.dataset.atual !== seloIcone) { iconeSelo.innerHTML = icone(seloIcone); iconeSelo.dataset.atual = seloIcone; }

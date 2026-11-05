@@ -2,6 +2,8 @@
 
 Front-end, back-end e firmware do protótipo da plantação automática. Tudo o que a fazenda faz está escrito em **MineC**: o painel gera um programa MineC, o servidor compila (léxico, sintático e **semântico**) e executa com um **interpretador**, e o ESP32 lê o sensor e liga a bomba.
 
+![Painel MineC: canteiros à esquerda e programa MineC à direita](docs/painel.png)
+
 ```
  Celular / PC                Servidor (Python)                       ESP32
 ┌────────────┐  HTTP   ┌──────────────────────────────┐  Wi-Fi  ┌────────────────┐

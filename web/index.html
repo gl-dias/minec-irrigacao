@@ -3,12 +3,13 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#2b5a1d">
+  <meta name="theme-color" content="#5f9bf0">
   <title>MineC Irrigação</title>
   <link rel="stylesheet" href="app.css">
 </head>
 <body>
   <div class="app">
+    <div class="cena">
     <header class="topo">
       <div class="marca">
         <span class="bloco" id="icone-bloco" aria-hidden="true"></span>
@@ -47,10 +48,19 @@
         <span class="resumo-intervalo" id="resumo-intervalo">2 min</span>
       </button>
     </section>
+    </div>
 
     <p class="aviso-desatualizado" id="aviso-desatualizado" hidden></p>
 
-    <div class="divisor"><span>Locais monitorados</span></div>
+    <div class="area">
+    <div class="coluna-fazenda">
+    <div class="coluna-topo">
+      <div class="divisor"><span>Locais monitorados</span></div>
+      <footer class="acoes">
+        <button class="botao botao-grande" id="btn-adicionar" type="button"><span data-icone="mais"></span>Adicionar sensor</button>
+        <button class="botao botao-intervalo" id="btn-intervalo" type="button"><span data-icone="lapis"></span><span id="rodape-intervalo">2 min</span></button>
+      </footer>
+    </div>
 
     <main id="lista-canteiros" class="lista"></main>
 
@@ -58,7 +68,9 @@
       <p>Nenhum canteiro ainda.</p>
       <p>Toque em <strong>Adicionar sensor</strong> para cadastrar o primeiro.</p>
     </div>
+    </div>
 
+    <div class="coluna-programa">
     <div class="divisor"><span>Programa MineC</span></div>
 
     <section class="programa" aria-label="Programa MineC">
@@ -121,11 +133,8 @@
         </div>
       </div>
     </section>
-
-    <footer class="acoes">
-      <button class="botao botao-grande" id="btn-adicionar" type="button"><span data-icone="mais"></span>Adicionar sensor</button>
-      <button class="botao botao-intervalo" id="btn-intervalo" type="button"><span data-icone="lapis"></span><span id="rodape-intervalo">2 min</span></button>
-    </footer>
+    </div>
+    </div>
   </div>
 
   <!-- Adicionar / editar canteiro -->
