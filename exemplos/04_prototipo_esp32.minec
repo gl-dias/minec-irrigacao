@@ -1,0 +1,49 @@
+# Protótipo real: ESP32 + sensor capacitivo de umidade + bomba no relé
+#
+# observer = pino do ESP32 onde está o AOUT do sensor (ADC1: 32 a 39)
+# lever    = pino do ESP32 ligado ao IN do módulo relé da bomba
+#
+# 'mine umidade' devolve a umidade do solo em % (0 = seco, 100 = encharcado),
+# já convertida pela calibração feita no painel. Sem leitura confiável (sensor
+# solto, ESP32 fora do ar) devolve -1, e nesse caso a bomba não deve ligar.
+
+observer umidade = 34
+lever bomba = 26
+
+craft limiteSeco = 30
+craft tempoRega = 5
+craft intervalo = 60
+craft regasSeguidas = 0
+
+command regar(segundos) {
+    say "Solo seco: ligando a bomba por " + segundos + " s"
+    power bomba
+    wait segundos
+    unpower bomba
+}
+
+say "Protótipo MineC iniciado"
+
+while true {
+    mine umidade
+
+    if umidade < 0 {
+        say "Sensor sem leitura válida: rega suspensa"
+    } else if umidade < limiteSeco {
+        regar(tempoRega)
+        regasSeguidas = regasSeguidas + 1
+    } else {
+        say "Umidade boa: " + umidade + "%"
+        regasSeguidas = 0
+    }
+
+    # Se regou 5 vezes seguidas e o solo continua seco, algo está errado
+    # (reservatório vazio, mangueira solta, sensor fora da terra...)
+    if regasSeguidas >= 5 {
+        say "Atenção: 5 regas seguidas e o solo continua seco. Verifique a bomba e o sensor."
+        regasSeguidas = 0
+        wait intervalo * 10
+    }
+
+    wait intervalo
+}

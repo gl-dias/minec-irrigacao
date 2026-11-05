@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2b5a1d">
+  <title>MineC Irrigação</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topo">
+      <div class="marca">
+        <span class="bloco" id="icone-bloco" aria-hidden="true"></span>
+        <div>
+          <h1 class="titulo">MineC</h1>
+          <p class="subtitulo">Monitoramento de Irrigação</p>
+        </div>
+      </div>
+      <div class="topo-direita">
+        <button class="status-conexao" id="btn-conexao" type="button" aria-label="Conexão e ajustes">
+          <span class="ponto" id="status-ponto"></span>
+          <span id="status-texto">Conectando…</span>
+        </button>
+        <span class="relogio"><span data-icone="relogio"></span><span id="relogio">--:--</span></span>
+      </div>
+    </header>
+
+    <section class="resumo" aria-label="Resumo">
+      <div class="resumo-item">
+        <span class="resumo-icone" data-icone="local"></span>
+        <strong id="qtd-locais">0</strong>
+        <span>Locais</span>
+      </div>
+      <div class="resumo-item">
+        <span class="resumo-icone" data-icone="sensor"></span>
+        <strong id="qtd-sensores">0</strong>
+        <span>Sensores</span>
+      </div>
+      <div class="resumo-item">
+        <span class="resumo-icone" data-icone="alerta"></span>
+        <strong id="qtd-irrigar">0</strong>
+        <span>Irrigar</span>
+      </div>
+      <button class="resumo-item resumo-botao" id="btn-intervalo-resumo" type="button" aria-label="Alterar intervalo">
+        <span class="resumo-icone" data-icone="despertador"></span>
+        <span class="resumo-intervalo" id="resumo-intervalo">2 min</span>
+      </button>
+    </section>
+
+    <p class="aviso-desatualizado" id="aviso-desatualizado" hidden></p>
+
+    <div class="divisor"><span>Locais monitorados</span></div>
+
+    <main id="lista-canteiros" class="lista"></main>
+
+    <div class="vazio" id="vazio" hidden>
+      <p>Nenhum canteiro ainda.</p>
+      <p>Toque em <strong>Adicionar sensor</strong> para cadastrar o primeiro.</p>
+    </div>
+
+    <div class="divisor"><span>Programa MineC</span></div>
+
+    <section class="programa" aria-label="Programa MineC">
+      <header class="programa-topo">
+        <div class="programa-titulo">
+          <span data-icone="codigo"></span>
+          <div>
+            <h2>Programa da fazenda</h2>
+            <p class="pixel-pequeno" id="programa-origem">gerado pelos canteiros</p>
+          </div>
+        </div>
+        <span class="chip" id="programa-status">Parado</span>
+      </header>
+
+      <div class="programa-corpo">
+        <p class="programa-erro" id="programa-erro" hidden></p>
+        <div class="programa-acoes">
+          <button class="botao botao-verde" id="btn-rodar" type="button"><span data-icone="play"></span>Rodar</button>
+          <button class="botao botao-contorno" id="btn-parar" type="button"><span data-icone="stop"></span>Parar</button>
+        </div>
+
+        <div class="abas" role="tablist">
+          <button role="tab" class="aba ativa" id="aba-console" aria-controls="painel-console" data-aba="console" aria-selected="true">Console</button>
+          <button role="tab" class="aba" id="aba-codigo" aria-controls="painel-codigo" data-aba="codigo" aria-selected="false">Código</button>
+          <button role="tab" class="aba" id="aba-tokens" aria-controls="painel-tokens" data-aba="tokens" aria-selected="false">Tokens</button>
+          <button role="tab" class="aba" id="aba-ast" aria-controls="painel-ast" data-aba="ast" aria-selected="false">AST</button>
+        </div>
+
+        <div class="painel" id="painel-console" role="tabpanel" aria-labelledby="aba-console" data-painel="console">
+          <ol class="console" id="console"></ol>
+        </div>
+
+        <div class="painel" id="painel-codigo" role="tabpanel" aria-labelledby="aba-codigo" data-painel="codigo" hidden>
+          <p class="nota nota-editor" id="editor-ajuda">Tab insere espaços. Para sair do editor pelo teclado, tecle Esc e depois Tab.</p>
+          <div class="editor">
+            <pre class="editor-linhas" id="editor-linhas" aria-hidden="true">1</pre>
+            <textarea id="editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Código MineC" aria-describedby="editor-ajuda"></textarea>
+          </div>
+          <ul class="diagnosticos" id="diagnosticos"></ul>
+          <div class="programa-acoes">
+            <button class="botao botao-contorno" id="btn-verificar" type="button">Verificar</button>
+            <button class="botao botao-verde" id="btn-rodar-codigo" type="button">Rodar este código</button>
+          </div>
+          <button class="link" id="btn-voltar-gerado" type="button" hidden>Descartar edição e voltar ao programa gerado</button>
+        </div>
+
+        <div class="painel" id="painel-tokens" role="tabpanel" aria-labelledby="aba-tokens" data-painel="tokens" hidden>
+          <p class="nota">Saída do analisador léxico para o código da aba Código.</p>
+          <div class="tabela-rolagem">
+            <table class="tokens">
+              <thead><tr><th>#</th><th>Token</th><th>Lexema</th><th>Lin:Col</th></tr></thead>
+              <tbody id="tokens"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="painel" id="painel-ast" role="tabpanel" aria-labelledby="aba-ast" data-painel="ast" hidden>
+          <p class="nota">Árvore sintática gerada pelo parser.</p>
+          <pre class="ast" id="ast"></pre>
+        </div>
+      </div>
+    </section>
+
+    <footer class="acoes">
+      <button class="botao botao-grande" id="btn-adicionar" type="button"><span data-icone="mais"></span>Adicionar sensor</button>
+      <button class="botao botao-intervalo" id="btn-intervalo" type="button"><span data-icone="lapis"></span><span id="rodape-intervalo">2 min</span></button>
+    </footer>
+  </div>
+
+  <!-- Adicionar / editar canteiro -->
+  <dialog class="folha" id="dlg-canteiro">
+    <form method="dialog" id="form-canteiro" novalidate>
+      <header class="folha-topo">
+        <h2 id="dlg-canteiro-titulo">Adicionar sensor</h2>
+        <button class="fechar" type="button" data-fechar aria-label="Fechar">×</button>
+      </header>
+
+      <label class="campo">
+        <span>Nome do local</span>
+        <input name="nome" maxlength="40" placeholder="Ex.: Canteiro de alface" required>
+      </label>
+
+      <div class="campo-duplo">
+        <label class="campo">
+          <span>Pino do sensor</span>
+          <select name="pino_sensor"></select>
+        </label>
+        <label class="campo">
+          <span>Pino da bomba (relé)</span>
+          <select name="pino_bomba"></select>
+        </label>
+      </div>
+
+      <label class="campo">
+        <span>Umidade mínima recomendada: <strong id="minimo-valor">30%</strong></span>
+        <input type="range" name="minimo" min="5" max="90" step="1" value="30">
+      </label>
+
+      <details class="calibracao">
+        <summary>Calibração do sensor</summary>
+        <p class="nota">O sensor capacitivo devolve um número de 0 a 4095: mais alto no solo seco, mais baixo na água. Deixe em branco para usar o padrão.</p>
+        <p class="leitura-atual">Leitura bruta agora: <strong id="leitura-bruta">--</strong></p>
+        <div class="campo-duplo">
+          <label class="campo">
+            <span>Seco (no ar)</span>
+            <input name="seco" inputmode="numeric" placeholder="3000">
+            <button class="mini" type="button" data-capturar="seco">Usar leitura atual</button>
+          </label>
+          <label class="campo">
+            <span>Molhado (na água)</span>
+            <input name="molhado" inputmode="numeric" placeholder="1300">
+            <button class="mini" type="button" data-capturar="molhado">Usar leitura atual</button>
+          </label>
+        </div>
+      </details>
+
+      <button class="botao botao-contorno largo" type="button" id="btn-testar-bomba" hidden><span data-icone="gota"></span>Testar bomba por 3 s</button>
+
+      <p class="erro-form" id="erro-canteiro" hidden></p>
+
+      <div class="folha-acoes">
+        <button class="botao botao-contorno" type="button" data-fechar>Cancelar</button>
+        <button class="botao botao-verde" id="btn-salvar-canteiro">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Intervalo -->
+  <dialog class="folha" id="dlg-intervalo">
+    <form method="dialog" id="form-intervalo">
+      <header class="folha-topo">
+        <h2>Frequência de verificação</h2>
+        <button class="fechar" type="button" data-fechar aria-label="Fechar">×</button>
+      </header>
+      <p class="nota">De quanto em quanto tempo o programa lê os sensores (o <code>wait intervalo</code> do código).</p>
+      <div class="opcoes" id="opcoes-intervalo"></div>
+      <label class="campo">
+        <span>Tempo de rega por vez (segundos)</span>
+        <input type="number" name="tempo_rega" min="1" max="600" required>
+      </label>
+      <p class="erro-form" id="erro-intervalo" hidden></p>
+      <div class="folha-acoes">
+        <button class="botao botao-contorno" type="button" data-fechar>Cancelar</button>
+        <button class="botao botao-verde">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Conexão e ajustes -->
+  <dialog class="folha" id="dlg-conexao">
+    <form method="dialog" id="form-conexao">
+      <header class="folha-topo">
+        <h2>Conexão e ajustes</h2>
+        <button class="fechar" type="button" data-fechar aria-label="Fechar">×</button>
+      </header>
+
+      <div class="seletor-modo" role="radiogroup" aria-label="Modo">
+        <label><input type="radio" name="modo" value="esp32"><span>ESP32 (hardware)</span></label>
+        <label><input type="radio" name="modo" value="simulacao"><span>Simulação</span></label>
+      </div>
+
+      <div class="cartao-info" id="info-esp32"></div>
+
+      <label class="campo" id="campo-fator">
+        <span>Acelerar a simulação</span>
+        <select name="fator_tempo">
+          <option value="1">Tempo real (1x)</option>
+          <option value="10">10x mais rápido</option>
+          <option value="30">30x mais rápido</option>
+          <option value="60">60x mais rápido</option>
+        </select>
+      </label>
+
+      <label class="campo">
+        <span>Segurança: tempo máximo de bomba ligada (s)</span>
+        <input type="number" name="limite_bomba" min="5" max="1800" required>
+      </label>
+
+      <p class="nota">Calibração usada pelos sensores que não têm a própria (leitura bruta de 0 a 4095).</p>
+      <div class="campo-duplo">
+        <label class="campo">
+          <span>Padrão seco</span>
+          <input type="number" name="cal_seco" min="0" max="4095" required>
+        </label>
+        <label class="campo">
+          <span>Padrão molhado</span>
+          <input type="number" name="cal_molhado" min="0" max="4095" required>
+        </label>
+      </div>
+
+      <label class="checkbox">
+        <input type="checkbox" name="rodar_ao_iniciar">
+        <span>Rodar o programa automaticamente quando o servidor ligar</span>
+      </label>
+
+      <p class="erro-form" id="erro-conexao" hidden></p>
+      <div class="folha-acoes">
+        <button class="botao botao-contorno" type="button" data-fechar>Cancelar</button>
+        <button class="botao botao-verde">Salvar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Confirmação -->
+  <dialog class="folha folha-pequena" id="dlg-confirmar">
+    <form method="dialog">
+      <h2 id="confirmar-titulo">Remover?</h2>
+      <p id="confirmar-texto"></p>
+      <div class="folha-acoes">
+        <button class="botao botao-contorno" value="nao">Cancelar</button>
+        <button class="botao botao-perigo" value="sim">Remover</button>
+      </div>
+    </form>
+  </dialog>
+
+  <div class="aviso-flutuante" id="toast" role="status"></div>
+
+  <script src="icones.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
