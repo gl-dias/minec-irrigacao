@@ -1,0 +1,31 @@
+Neste tutorial, você vai montar e colocar para funcionar o MineC, um sistema de irrigação automática em que tudo o que a fazenda faz é escrito em uma linguagem própria.
+
+Você vai precisar de um ESP32, um sensor capacitivo de umidade, um módulo relé de 5 volts, uma bomba d'água com fonte própria, e um computador com Python e a Arduino IDE.
+
+Passo um: inicie o servidor. Na pasta do projeto, execute o comando python servidor/servidor.py. O terminal mostra o endereço do painel e o endereço que vai no ESP32.
+
+Passo dois: monte o circuito. Ligue o sensor: VCC no 3V3, GND no GND, e AOUT no GPIO 34. Ligue o relé: VCC no VIN, GND no GND, e IN no GPIO 26. A bomba vai no contato NO do relé e usa fonte própria. Não ligue a água ainda.
+
+Passo três: antes de ligar a água, com a bomba desconectada, faça três testes. O relé precisa soltar com 3,3 volts, não pode armar quando o ESP32 reinicia, e precisa soltar em até 5 segundos depois que você fecha o servidor.
+
+Passo quatro: grave o firmware. Na Arduino IDE, instale a placa esp32 e abra o arquivo do firmware. Preencha o nome e a senha do Wi-Fi e o endereço do servidor. Escolha a placa ESP32 Dev Module, clique em Carregar e abra o Monitor Serial em 115200. Deve aparecer a mensagem: servidor conectado.
+
+Passo cinco: no painel, clique no status, no canto superior direito. Escolha ESP32 e clique em Salvar. O status muda para Conectado.
+
+Passo seis: clique em Adicionar sensor. Dê um nome ao local, confira o pino do sensor e o pino da bomba, ajuste a umidade mínima e salve.
+
+Passo sete: calibre o sensor. Clique no nome do local e abra Calibração do sensor. Com o sensor seco, no ar, clique em Usar leitura atual no campo Seco. Com o sensor em um copo d'água, clique em Usar leitura atual no campo Molhado. Depois, salve.
+
+Passo oito: clique no botão de frequência. Escolha de quanto em quanto tempo o programa lê o sensor e por quantos segundos a bomba rega, e salve.
+
+Passo nove: clique em Rodar. O programa lê a umidade a cada ciclo, e o console mostra cada decisão. O solo vai secando, aqui em tempo acelerado.
+
+Quando a umidade fica abaixo do mínimo, o programa liga a bomba, e a umidade sobe. Depois do tempo de rega, a bomba desliga sozinha.
+
+Passo dez: veja o trabalho do compilador. Na aba Código está o programa gerado em MineC. Em Tokens, a saída do analisador léxico. E em AST, a árvore sintática.
+
+Se aparecer Sem sinal, confira os fios do sensor. Enquanto isso, o programa recebe menos um e suspende a rega.
+
+Se aparecer ESP32 offline, confira o Wi-Fi e o endereço do servidor no firmware. Por segurança, os relés são desligados.
+
+Pronto! Agora a sua plantação rega sozinha, com tudo escrito em MineC. Obrigado por assistir!
