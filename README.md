@@ -69,6 +69,8 @@ Digite no terminal para provocar cada situação:
 
 ## Montagem do hardware
 
+<img src="docs/prototipo-montado.png" alt="Protótipo montado: ESP32 e relé na protoboard, sensor de umidade no recipiente e bomba no copo d'água" width="360">
+
 | Peça | Pino da peça | Liga em |
 |---|---|---|
 | Sensor capacitivo de umidade (v1.2 / v2.0) | VCC | 3V3 do ESP32 |
