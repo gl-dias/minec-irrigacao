@@ -47,6 +47,26 @@ O painel abre em **modo simulação**: dá para testar tudo sem hardware, mexend
 
 Abra o painel por IP, por `localhost` ou por um nome de rede local (`meu-pc`, `meu-pc.local`). Pedidos com um domínio de fora no endereço são recusados, para que nenhum site comande a bomba pelo seu navegador.
 
+## Demonstração sem hardware
+
+Para apresentar sem o ESP32 montado, um único comando sobe o servidor, abre o painel e liga uma placa virtual:
+
+```bash
+python3 esp32/simulador_esp32.py --demo
+```
+
+A placa virtual usa o mesmo protocolo e a mesma lógica de segurança do firmware, então o servidor roda no modo **ESP32 (hardware)**. A umidade é simulada e varia bem mais rápido que num solo real. O programa lê o sensor a cada 10 s, e a configuração da demo fica em `servidor/dados/demo/`, sem tocar na normal.
+
+Digite no terminal para provocar cada situação:
+
+| Comando | O que acontece |
+|---|---|
+| `umidade 15` | o solo seca e o programa rega na próxima verificação |
+| `fio` | solta o fio do sensor: o painel mostra *Sem sinal* e a rega é suspensa |
+| `wifi` | derruba o Wi-Fi: os relés são cortados e o painel mostra *Offline* |
+| `ar`, `agua`, `solo` | move o sensor, para mostrar a calibração |
+| `sair` | encerra tudo |
+
 ## Montagem do hardware
 
 | Peça | Pino da peça | Liga em |
@@ -139,6 +159,7 @@ O que estas camadas não cobrem: quem está na mesma rede consegue usar o painel
 │   └── dados/            # config.json (criado ao rodar)
 ├── web/                  # painel (HTML, CSS e JS puros, fontes locais)
 ├── esp32/minec_esp32/    # firmware Arduino
+├── esp32/simulador_esp32.py  # ESP32 virtual, para demonstrar sem hardware
 └── exemplos/04_prototipo_esp32.minec
 ```
 
